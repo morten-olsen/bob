@@ -1,25 +1,31 @@
-import { Attributes, GraphNode } from './node';
+import { GraphNode } from './node';
 import { Planable } from './planable';
 
-type Plugin<TAttributes extends Attributes = Attributes> = {
+type Plugin<TAttributes = any, TContext = any> = {
+  context: any;
+  attributes: any;
   getMetaNodes?: (
-    node: GraphNode<TAttributes>,
-  ) => Promise<GraphNode<TAttributes>[]>;
-  isImpossible?: (node: GraphNode<TAttributes>) => Promise<boolean>;
+    node: GraphNode<TAttributes, TContext>,
+  ) => Promise<GraphNode<TAttributes, TContext>[]>;
+  isImpossible?: (node: GraphNode<TAttributes, TContext>) => Promise<boolean>;
   isPlanable?: (
-    node: GraphNode<TAttributes>,
+    node: GraphNode<TAttributes, TContext>,
     planable: Planable<TAttributes>,
   ) => boolean;
 };
 
-type Plugins = Plugin[];
+type Plugins = Record<string, Plugin>;
 
 type PluginAttributes<TPlugins extends Plugins> = {
-  [K in keyof TPlugins]: TPlugins[K] extends Plugin<infer TAttributes>
-  ? TAttributes extends Attributes
+  [K in keyof TPlugins]: TPlugins[K] extends Plugin<infer TAttributes, any>
   ? TAttributes
-  : never
   : never;
-}[number];
+}[keyof TPlugins];
 
-export type { Plugin, Plugins, PluginAttributes };
+type PluginContext<TPlugins extends Plugins> = {
+  [K in keyof TPlugins]: TPlugins[K] extends Plugin<any, infer TContext>
+  ? TContext
+  : never;
+}[keyof TPlugins];
+
+export type { Plugin, Plugins, PluginAttributes, PluginContext };

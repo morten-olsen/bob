@@ -11,7 +11,6 @@ type Planable<TAttributes extends Attributes = Attributes> = {
   };
   attributes: TAttributes;
   required?: boolean;
-  locations?: string[];
 };
 
 export type { Planable };

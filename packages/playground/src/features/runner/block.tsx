@@ -14,7 +14,7 @@ type BlockProps = {
   presenter?: React.FC<any>;
 };
 
-const id = (function* () {
+const id = (function*() {
   let i = 0;
   while (true) {
     yield i++;
@@ -57,6 +57,7 @@ const Block: React.FC<BlockProps> = ({
       });
     } catch (error) {
       setError(error);
+      console.error(error);
     }
 
     setRunning(false);
@@ -75,6 +76,7 @@ const Block: React.FC<BlockProps> = ({
       }
       if (type === 'error') {
         setError(payload);
+        console.error(payload);
       }
     };
     worker.addEventListener('message', listener);

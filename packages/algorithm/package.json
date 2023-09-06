@@ -25,5 +25,8 @@
     "build": "tsc --build configs/tsconfig.libs.json"
   },
   "types": "./dist/cjs/types/index.d.ts",
-  "version": "0.1.8"
+  "version": "0.1.8",
+  "dependencies": {
+    "@sinclair/typebox": "^0.31.14"
+  }
 }

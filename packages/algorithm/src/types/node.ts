@@ -2,11 +2,14 @@ import type { Planable } from './planable';
 
 type Attributes = any;
 
-type GraphNode<TAttributes extends Attributes = Attributes> = {
+type GraphNode<
+  TAttributes extends Attributes = Attributes,
+  TContext extends Attributes = Attributes,
+> = {
   id: string;
   type: 'root' | 'planable' | 'travel';
   score: number;
-  location: string;
+  context: TContext;
   parent: string | null;
   time: number;
   exploreId: number;

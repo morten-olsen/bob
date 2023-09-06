@@ -1,18 +1,26 @@
 import { Attributes, GraphNode } from '../types/node';
-import { Plugin } from '../types/plugin';
+import { Plugins } from '../types/plugin';
 import { hasImpossible } from './is-impossible';
 
-type ExpandOptions<TAttributes extends Attributes> = {
-  node: GraphNode<TAttributes>;
+type ExpandOptions<
+  TAttributes extends Attributes,
+  TContext extends Attributes,
+> = {
+  node: GraphNode<TAttributes, TContext>;
   generateId: () => string;
-  plugins: Plugin[];
+  plugins: Plugins;
 };
 
-const expandNode = async <TAttributes extends Attributes>({
+const expandNode = async <
+  TAttributes extends Attributes,
+  TContext extends Attributes,
+>({
   node,
   generateId,
   plugins,
-}: ExpandOptions<TAttributes>): Promise<GraphNode<TAttributes>[]> => {
+}: ExpandOptions<TAttributes, TContext>): Promise<
+  GraphNode<TAttributes, TContext>[]
+> => {
   const isImpossible = hasImpossible({ node });
 
   if (isImpossible) {
@@ -21,7 +29,7 @@ const expandNode = async <TAttributes extends Attributes>({
   }
 
   const metaNodes = await Promise.all(
-    plugins.map(async (plugin) => {
+    Object.values(plugins).map(async (plugin) => {
       if (!plugin.getMetaNodes) {
         return [];
       }
@@ -39,7 +47,7 @@ const expandNode = async <TAttributes extends Attributes>({
   );
 
   const planables = node.remaining.filter((planable) => {
-    const hasNonPlanable = plugins.some(
+    const hasNonPlanable = Object.values(plugins).some(
       (plugin) => plugin.isPlanable && !plugin.isPlanable(node, planable),
     );
     return !hasNonPlanable;
