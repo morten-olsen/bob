@@ -1,10 +1,16 @@
 {
   "dependencies": {
+    "@pnpm/find-workspace-packages": "^6.0.9",
+    "@pnpm/logger": "^5.0.0",
     "@react-native-community/eslint-config": "^3.2.0",
     "eslint": "^8.33.0",
     "prettier": "^2.8.3",
+    "ts-node": "^10.9.1",
     "turbo": "^1.9.9"
   },
+  "workspaces": [
+    "packages/*"
+  ],
   "private": true,
   "scripts": {
     "build": "turbo build",
@@ -14,5 +20,8 @@
     "test": "turbo test"
   },
   "version": "0.1.8",
-  "name": "@bob-the-algorithm/repo"
+  "name": "@bob-the-algorithm/repo",
+  "devDependencies": {
+    "@types/node": "^20.5.9"
+  }
 }

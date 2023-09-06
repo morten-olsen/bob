@@ -24,5 +24,6 @@
   "scripts": {
     "build": "tsc --build configs/tsconfig.libs.json"
   },
-  "types": "./dist/cjs/types/index.d.ts"
+  "types": "./dist/cjs/types/index.d.ts",
+  "version": "0.1.8"
 }

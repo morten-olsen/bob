@@ -108,7 +108,7 @@ jobs:
           pnpm install
           git config user.name "Github Actions Bot"
           git config user.email "<>"
-          pnpm version $(git describe --tag --abbrev=0)
-          pnpm publish -r --publish-branch main --access public
+          pnpm ts-node -T scripts/set-version.ts $(git describe --tag --abbrev=0)
+          pnpm publish -r --publish-branch main --access public --no-git-checks
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
