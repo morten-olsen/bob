@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "declarationDir": "../dist/esm/types",
+    "outDir": "../dist/esm"
+  },
+  "extends": "@bob-the-algorithm/config/tsconfig.esm.json",
+  "include": [
+    "../src/**/*"
+  ]
+}
