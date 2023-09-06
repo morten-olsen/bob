@@ -1,4 +1,4 @@
-import{r as $,g as ps,R as f_,c as nP,j as Ne,B as iP}from"./index-4a90bf6b.js";const rP=new Worker(new URL("/assets/script-8e2076e1.js",self.location),{type:"module"});/**
+import{r as $,g as ps,R as f_,c as nP,j as Ne,B as iP}from"./index-fcb9f26a.js";const rP=new Worker(new URL("/dist/assets/script-8e2076e1.js",self.location),{type:"module"});/**
  * @license
  * Copyright 2010-2023 Three.js Authors
  * SPDX-License-Identifier: MIT
