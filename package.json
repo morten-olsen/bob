@@ -13,6 +13,6 @@
     "start": "turbo start",
     "test": "turbo test"
   },
-  "version": "0.0.1",
+  "version": "0.1.8",
   "name": "@bob-the-algorithm/repo"
 }
