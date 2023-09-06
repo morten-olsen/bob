@@ -44,12 +44,10 @@ jobs:
             packages/*/package.json
             package.json
             README.md
-      - uses: actions/upload-artifact@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
         with:
-          name: web
-          retention-days: 5
-          path: |
-            packages/playground/dist
+          path: './packages/playground/dist'
   update-release-draft:
     if: github.ref == 'refs/heads/main'
     needs: build
@@ -76,11 +74,11 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
-        with:
-          artifact_name: web
 
   release-npm:
     if: github.ref == 'refs/heads/main'
