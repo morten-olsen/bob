@@ -1,4 +1,4 @@
-import { GraphNode } from 'bob-the-algorithm';
+import { GraphNode } from '@bob-the-algorithm/core';
 import { useMemo } from 'react';
 import { ConvertedResult } from '../../utils/graph';
 import { format } from 'date-fns';

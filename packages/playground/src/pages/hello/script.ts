@@ -1,4 +1,4 @@
-import { calulation, plugins } from 'bob-the-algorithm';
+import { calulation, plugins } from '@bob-the-algorithm/core';
 import { createWorker } from '../../features/runner/worker';
 import { convertResult } from '../../utils/graph';
 

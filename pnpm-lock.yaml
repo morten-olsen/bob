@@ -30,7 +30,7 @@ importers:
 
   packages/playground:
     dependencies:
-      bob-the-algorithm:
+      '@bob-the-algorithm/core':
         specifier: workspace:^
         version: link:../algorithm
       date-fns:

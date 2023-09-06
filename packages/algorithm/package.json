@@ -20,7 +20,7 @@
   ],
   "private": false,
   "main": "./dist/cjs/index.js",
-  "name": "bob-the-algorithm",
+  "name": "@bob-the-algorithm/core",
   "scripts": {
     "build": "tsc --build configs/tsconfig.libs.json"
   },

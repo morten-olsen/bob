@@ -1,4 +1,4 @@
-import { CalulationResult } from 'bob-the-algorithm';
+import { CalulationResult } from '@bob-the-algorithm/core';
 
 function msToHMS(ms: number) {
   // 1- Convert to seconds:

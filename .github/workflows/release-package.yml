@@ -64,7 +64,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build, update-release-draft]
     permissions:
-      contents: write
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -73,12 +77,11 @@ jobs:
         with:
           name: lib
           path: ./
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@4.0.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: gh-pages
-          folder: packages/playground/dist
+      - name: Deploy to GitHub Pages
+        working-directory: ./packages/playground/dist
+        id: deployment
+        uses: actions/deploy-pages@v2
+
   release-npm:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
