@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "declarationDir": "../dist/cjs/types",
+    "outDir": "../dist/cjs"
+  },
+  "extends": "@bob-the-algorithm/config/tsconfig.cjs.json",
+  "include": [
+    "../src/**/*"
+  ]
+}
