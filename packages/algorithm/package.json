@@ -18,6 +18,7 @@
   "files": [
     "dist/**/*"
   ],
+  "private": false,
   "main": "./dist/cjs/index.js",
   "name": "bob-the-algorithm",
   "scripts": {

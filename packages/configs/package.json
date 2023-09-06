@@ -1,5 +1,5 @@
 {
   "name": "@bob-the-algorithm/config",
-  "private": true,
+  "private": false,
   "version": "0.0.1"
 }

@@ -34,6 +34,8 @@ jobs:
           pnpm install
           pnpm run build
       - uses: actions/upload-artifact@v3
+        env:
+          ASSET_URL: https://mortenolsen.pro/bob
         with:
           name: lib
           retention-days: 5
