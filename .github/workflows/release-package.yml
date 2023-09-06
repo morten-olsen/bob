@@ -104,6 +104,6 @@ jobs:
           git config user.name "Github Actions Bot"
           git config user.email "<>"
           pnpm version $(git describe --tag --abbrev=0) --no-git-tag-version
-          pnpm publish --no-git-checks -r
+          pnpm publish --no-git-checks -r -f
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
