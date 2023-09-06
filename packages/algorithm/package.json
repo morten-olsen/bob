@@ -1,0 +1,29 @@
+{
+  "devDependencies": {
+    "@bob-the-algorithm/config": "workspace:^",
+    "typescript": "^5.0.4"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "default": "./dist/esm/index.js",
+        "types": "./dist/esm/types/index.d.ts"
+      },
+      "require": {
+        "default": "./dist/cjs/index.js",
+        "types": "./dist/cjs/types/index.d.ts"
+      }
+    }
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "main": "./dist/cjs/index.js",
+  "name": "bob-the-algorithm",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "build:cjs": "tsc -p configs/tsconfig.cjs.json",
+    "build:esm": "tsc -p configs/tsconfig.esm.json"
+  },
+  "types": "./dist/cjs/types/index.d.ts"
+}

@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "@react-native-community/eslint-config": "^3.2.0",
+    "eslint": "^8.33.0",
+    "prettier": "^2.8.3",
+    "turbo": "^1.9.9"
+  },
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "eslint packages/*/src",
+    "start": "turbo start",
+    "test": "turbo test"
+  },
+  "version": "0.0.1",
+  "name": "@bob-the-algorithm/repo"
+}

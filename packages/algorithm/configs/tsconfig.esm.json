@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "declarationDir": "../dist/esm/types",
+    "outDir": "../dist/esm"
+  },
+  "extends": "@morten-olsen/bob-config/tsconfig.esm.json",
+  "include": [
+    "../src/**/*"
+  ]
+}
