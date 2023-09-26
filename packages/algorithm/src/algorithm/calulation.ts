@@ -21,6 +21,10 @@ type RunOptions<TPlugins extends Plugins> = {
   heuristic?: (result: any) => boolean;
 };
 
+type PlanableWithPlugins<TPlugins extends Plugins> = Planable<
+  PluginAttributes<TPlugins>
+>;
+
 class Bob<TPlugins extends Plugins> {
   #options: CalulationOptions<TPlugins>;
   #id: number = 0;
@@ -99,5 +103,5 @@ class Bob<TPlugins extends Plugins> {
   };
 }
 
-export type { CalulationOptions, CalulationResult };
+export type { CalulationOptions, CalulationResult, PlanableWithPlugins };
 export { Bob };

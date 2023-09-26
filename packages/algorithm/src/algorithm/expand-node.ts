@@ -70,7 +70,7 @@ const expandNode = async <
       node.time + node.duration,
       planable.start?.min || 0,
     );
-    return {
+    const nextNode = {
       ...node,
       type: 'planable',
       exploreId: 0,
@@ -83,6 +83,14 @@ const expandNode = async <
       completed: remaining.length === 0,
       parent: node.id,
     };
+    return Object.values(plugins).reduce(
+      // TODO: remove any
+      (acc, plugin) =>
+        (plugin.mutateNode
+          ? plugin.mutateNode(acc as any, planable)
+          : acc) as any,
+      nextNode,
+    ) as any;
   });
 
   return [...planableNodes, ...metaNodes.flat()];

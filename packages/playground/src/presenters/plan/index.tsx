@@ -1,24 +1,26 @@
 import { GraphNode } from '@bob-the-algorithm/core';
 import { useMemo } from 'react';
-import { ConvertedResult } from '../../utils/graph';
+import { convertResult } from '../../utils/graph';
 import { format } from 'date-fns';
+import { useExperimentResult } from '../../features/experiment';
+import { useSelectNode } from '../../features/experiment/hooks';
 
 type PlanProps = {
-  id: string;
-  output: ConvertedResult;
+  node: GraphNode;
 };
 
 type NodeProps = {
   node: GraphNode;
-  output: ConvertedResult;
 };
 
-const Node = ({ node, output }: NodeProps) => {
+const Node = ({ node }: NodeProps) => {
+  const selectNode = useSelectNode();
+  const data = useExperimentResult();
   const planable = useMemo(() => {
     return node.planable
-      ? output.result.planables.find((n) => n.id === node.planable)
+      ? data?.planables.find((n) => n.id === node.planable)
       : null;
-  }, [node, output]);
+  }, [node, data]);
 
   const time = useMemo(() => {
     const start = new Date(node.time);
@@ -32,14 +34,14 @@ const Node = ({ node, output }: NodeProps) => {
 
   if (planable) {
     return (
-      <div>
+      <div onClick={() => selectNode(node)}>
         {time} Planable: {planable!.id}
       </div>
     );
   }
   if (node.type === 'travel') {
     return (
-      <div>
+      <div onClick={() => selectNode(node)}>
         {time} Travel: {node.context.location}
       </div>
     );
@@ -48,26 +50,38 @@ const Node = ({ node, output }: NodeProps) => {
   return null;
 };
 
-const Plan: React.FC<PlanProps> = ({ id, output }) => {
+const Plan: React.FC<PlanProps> = ({ node }) => {
+  const data = useExperimentResult();
+  const output = useMemo(() => (data ? convertResult(data) : null), [data]);
   const nodes = useMemo(() => {
+    if (!output) {
+      return [];
+    }
     const result: GraphNode[] = [];
-    let current = output.result.nodes.find((n) => n.id === id);
+    let current = node;
+    if (!current) {
+      return [];
+    }
 
     while (current) {
       result.push(current);
       if (!current.parent) {
         break;
       }
-      current = output.result.nodes.find((n) => n.id === current?.parent);
+      current = output.result.nodes.find((n) => n.id === current?.parent)!;
     }
 
     return result;
-  }, [id, output]);
+  }, [output, node]);
+
+  if (!output) {
+    return null;
+  }
 
   return (
     <>
       {nodes.map((n) => (
-        <Node key={n.id} node={n} output={output} />
+        <Node key={n.id} node={n} />
       ))}
     </>
   );

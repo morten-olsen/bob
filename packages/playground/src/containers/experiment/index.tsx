@@ -1,28 +1,34 @@
 import { useEffect, useState } from 'react';
-import { pages } from '../utils/pages';
-import { RunnerProvider } from '../features/runner';
+import { experiments } from '../../utils/experiments';
+import { ExperimentProvider } from '../../features/experiment/context';
+import { ExperimentView } from './view';
+
 type PageProps = {
   slug: string;
 };
 
+type Experiment = {
+  worker: () => Worker;
+  view: React.ReactElement;
+};
+
 const Page: React.FC<PageProps> = ({ slug }) => {
-  const [Component, setComponent] = useState<React.FC>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<unknown>();
+  const [experiment, setExperiment] = useState<Experiment>();
 
   useEffect(() => {
     setLoading(true);
     setError(undefined);
     const load = async () => {
       try {
-        const page = pages.find((page) => page.slug === slug);
+        const page = experiments.find((page) => page.slug === slug);
         if (!page) {
           throw new Error(`Page not found: ${slug}`);
         }
-        const { default: Component } = (await page.loader()) as {
-          default: React.FC;
-        };
-        setComponent(() => Component);
+        const next = (await page.loader()) as Experiment;
+        console.log('n', next);
+        setExperiment(next);
       } catch (err) {
         setError(err);
       } finally {
@@ -37,14 +43,14 @@ const Page: React.FC<PageProps> = ({ slug }) => {
     return <div>Error: {error.toString()}</div>;
   }
 
-  if (loading || !Component) {
+  if (loading || !experiment) {
     return <div>Loading...</div>;
   }
 
   return (
-    <RunnerProvider>
-      <Component />
-    </RunnerProvider>
+    <ExperimentProvider worker={experiment.worker}>
+      <ExperimentView>{experiment.view}</ExperimentView>
+    </ExperimentProvider>
   );
 };
 

@@ -11,9 +11,12 @@
   },
   "dependencies": {
     "@bob-the-algorithm/core": "workspace:^",
+    "@nextui-org/react": "^2.1.13",
     "date-fns": "^2.30.0",
+    "framer-motion": "^10.16.4",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "tailwindcss": "^3.3.3"
   },
   "devDependencies": {
     "@mdx-js/rollup": "^2.3.0",
@@ -23,9 +26,11 @@
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@vitejs/plugin-react-swc": "^3.3.2",
+    "autoprefixer": "^10.4.16",
     "eslint": "^8.45.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "postcss": "^8.4.30",
     "reagraph": "^4.13.0",
     "typescript": "^5.0.2",
     "vite": "^4.4.5"

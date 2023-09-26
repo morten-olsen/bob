@@ -1,61 +1,47 @@
 import { useMemo, useState } from 'react';
 import { GraphCanvas } from 'reagraph';
-import { ConvertedResult } from '../../utils/graph';
-import { Plan } from './plan';
+import { useExperimentResult } from '../../features/experiment';
+import { convertResult } from '../../utils/graph';
+import {
+  useSelectNode,
+  useSelectedNode,
+} from '../../features/experiment/hooks';
 
-type PresenterProps = {
-  output: ConvertedResult;
-};
-
-const Presenter: React.FC<PresenterProps> = ({ output }) => {
-  const [currentStep, setCurrentStep] = useState(0);
+const Graph: React.FC = () => {
+  const data = useExperimentResult();
+  const selectedNode = useSelectedNode();
+  const selectNode = useSelectNode();
+  const output = useMemo(() => {
+    if (!data) {
+      return undefined;
+    }
+    return convertResult(data);
+  }, [data]);
   const [visualize, setVisualize] = useState(false);
-  const [selectedNode, setSelectedNode] = useState<string | undefined>(
-    undefined,
-  );
   const selectedPath = useMemo(() => {
     if (!selectedNode) {
       return [];
     }
     const result: string[] = [];
-    let current = output.result.nodes.find((n) => n.id === selectedNode);
+    let current = output?.result.nodes.find((n) => n.id === selectedNode.id);
 
     while (current) {
       result.push(current.id);
       if (!current.parent) {
         break;
       }
-      current = output.result.nodes.find((n) => n.id === current?.parent);
+      current = output?.result.nodes.find((n) => n.id === current?.parent);
     }
 
     return result;
   }, [selectedNode, output]);
-  const completed = useMemo(() => {
-    return (
-      output?.result?.completed
-        .map((c) => ({
-          id: c.id,
-          score: c.score,
-        }))
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 10) || []
-    );
-  }, [output?.result?.completed]);
 
-  const maxStep = useMemo(
-    () => Math.max(...(output?.nodes?.map((n) => n.data?.exploreId) || [])),
-    [output],
-  );
-  const collapsedNodeIds = useMemo(
-    () =>
-      output?.nodes
-        ?.filter((n) => n.data?.exploreId > currentStep)
-        .map((n) => n.id),
-    [output, currentStep],
-  );
   if (!output) {
     return null;
   }
+
+  console.log(output);
+
   return (
     <>
       Nodes count: {output.nodes.length}
@@ -63,49 +49,22 @@ const Presenter: React.FC<PresenterProps> = ({ output }) => {
         {visualize ? 'Hide' : 'Show'} Visualize
       </button>
       {visualize && (
-        <>
-          <button onClick={() => setCurrentStep(currentStep - 1)}>Prev</button>
-          <input
-            type="range"
-            min={0}
-            max={maxStep}
-            value={currentStep}
-            onChange={(e) => setCurrentStep(parseInt(e.target.value))}
-          />
-          <button onClick={() => setCurrentStep(currentStep + 1)}>Next</button>
-        </>
-      )}
-      {completed.map((c) => (
-        <div key={c.id} onClick={() => setSelectedNode(c.id)}>
-          {c.id} - {c.score}
-        </div>
-      ))}
-      {selectedNode && <Plan id={selectedNode} output={output} />}
-      {visualize && (
         <div style={{ position: 'relative', height: '70vh' }}>
           <GraphCanvas
             {...output}
-            collapsedNodeIds={collapsedNodeIds}
             labelType="all"
+            layoutType="hierarchicalTd"
             onNodeClick={(node) => {
-              if (node.id === selectedNode) {
-                setSelectedNode(undefined);
+              if (node.id === selectedNode?.id) {
+                selectNode(undefined);
                 return;
               }
-              setSelectedNode(node.id);
+              const nextNode = data?.nodes.find((n) => n.id === node.id);
+              selectNode(nextNode);
             }}
             selections={selectedPath}
             renderNode={({ size, opacity, node }) => {
               let color = 'gray';
-              if (
-                node.data?.exploreId < currentStep &&
-                node.data?.exploreId > 0
-              ) {
-                color = 'yellow';
-              }
-              if (node.data?.exploreId === currentStep) {
-                color = 'blue';
-              }
               if (node.data?.deadEnd) {
                 color = 'red';
               }
@@ -136,4 +95,4 @@ const Presenter: React.FC<PresenterProps> = ({ output }) => {
   );
 };
 
-export { Presenter };
+export { Graph };

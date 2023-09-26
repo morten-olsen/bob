@@ -47,7 +47,7 @@ const transport = ({ getTravelTime }: TransportOptions) =>
               planable: undefined,
               location,
               exploreId: 0,
-              score: node.score - 10,
+              score: node.score - 5,
               time: node.time + node.duration,
               duration: travelTime,
               parent: node.id,

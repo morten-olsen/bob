@@ -12,6 +12,10 @@ type Plugin<TAttributes = any, TContext = any> = {
     node: GraphNode<TAttributes, TContext>,
     planable: Planable<TAttributes>,
   ) => boolean;
+  mutateNode?: (
+    node: GraphNode<TAttributes, TContext>,
+    planable: Planable<TAttributes>,
+  ) => GraphNode<TAttributes, TContext>;
 };
 
 type Plugins = Record<string, Plugin>;

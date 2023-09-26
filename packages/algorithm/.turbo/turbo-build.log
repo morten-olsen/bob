@@ -1,4 +1,4 @@
 
-> bob-the-algorithm@ build /Users/alice/work/private/bob/packages/algorithm
+> @bob-the-algorithm/core@0.1.8 build /home/alice/Git/bob/packages/algorithm
 > tsc --build configs/tsconfig.libs.json
 
