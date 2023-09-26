@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { GraphCanvas } from 'reagraph';
 import { useExperimentResult } from '../../features/experiment';
 import { convertResult } from '../../utils/graph';
@@ -17,7 +17,6 @@ const Graph: React.FC = () => {
     }
     return convertResult(data);
   }, [data]);
-  const [visualize, setVisualize] = useState(false);
   const selectedPath = useMemo(() => {
     if (!selectedNode) {
       return [];
@@ -45,52 +44,47 @@ const Graph: React.FC = () => {
   return (
     <>
       Nodes count: {output.nodes.length}
-      <button onClick={() => setVisualize(!visualize)}>
-        {visualize ? 'Hide' : 'Show'} Visualize
-      </button>
-      {visualize && (
-        <div style={{ position: 'relative', height: '70vh' }}>
-          <GraphCanvas
-            {...output}
-            labelType="all"
-            layoutType="hierarchicalTd"
-            onNodeClick={(node) => {
-              if (node.id === selectedNode?.id) {
-                selectNode(undefined);
-                return;
-              }
-              const nextNode = data?.nodes.find((n) => n.id === node.id);
-              selectNode(nextNode);
-            }}
-            selections={selectedPath}
-            renderNode={({ size, opacity, node }) => {
-              let color = 'gray';
-              if (node.data?.deadEnd) {
-                color = 'red';
-              }
-              if (node.data?.completed) {
-                color = 'green';
-              }
-              if (node.data?.type === 'root') {
-                color = 'black';
-              }
-              return (
-                <group>
-                  <mesh>
-                    <circleGeometry attach="geometry" args={[size]} />
-                    <meshBasicMaterial
-                      attach="material"
-                      color={color}
-                      opacity={opacity}
-                      transparent
-                    />
-                  </mesh>
-                </group>
-              );
-            }}
-          />
-        </div>
-      )}
+      <div style={{ position: 'relative', height: '70vh' }}>
+        <GraphCanvas
+          {...output}
+          labelType="all"
+          layoutType="hierarchicalTd"
+          onNodeClick={(node) => {
+            if (node.id === selectedNode?.id) {
+              selectNode(undefined);
+              return;
+            }
+            const nextNode = data?.nodes.find((n) => n.id === node.id);
+            selectNode(nextNode);
+          }}
+          selections={selectedPath}
+          renderNode={({ size, opacity, node }) => {
+            let color = 'gray';
+            if (node.data?.deadEnd) {
+              color = 'red';
+            }
+            if (node.data?.completed) {
+              color = 'green';
+            }
+            if (node.data?.type === 'root') {
+              color = 'black';
+            }
+            return (
+              <group>
+                <mesh>
+                  <circleGeometry attach="geometry" args={[size]} />
+                  <meshBasicMaterial
+                    attach="material"
+                    color={color}
+                    opacity={opacity}
+                    transparent
+                  />
+                </mesh>
+              </group>
+            );
+          }}
+        />
+      </div>
     </>
   );
 };

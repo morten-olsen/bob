@@ -1,4 +1,8 @@
-import { CalulationResult, GraphNode } from '@bob-the-algorithm/core';
+import {
+  AllPlugins,
+  CalulationResult,
+  GraphNode,
+} from '@bob-the-algorithm/core';
 import {
   ReactNode,
   createContext,
@@ -7,9 +11,11 @@ import {
   useMemo,
   useState,
 } from 'react';
+import { ExperimentInfo } from './types';
 
 type ExperimentResult = {
-  payload: CalulationResult<any>;
+  payload: CalulationResult<AllPlugins>;
+  duration: number;
 };
 
 type ExperimentContextValue = {
@@ -22,8 +28,13 @@ type ExperimentContextValue = {
 
 type ExperimentProviderProps = {
   children: ReactNode;
-  worker: () => Worker;
+  experimentInfo: ExperimentInfo;
 };
+
+const createWorker = () =>
+  new Worker(new URL('./worker.ts', import.meta.url), {
+    type: 'module',
+  });
 
 const ExperimentContext = createContext<ExperimentContextValue>({
   loading: false,
@@ -32,7 +43,7 @@ const ExperimentContext = createContext<ExperimentContextValue>({
 
 const ExperimentProvider: React.FC<ExperimentProviderProps> = ({
   children,
-  worker,
+  experimentInfo,
 }) => {
   const [result, setResult] = useState<ExperimentResult>();
   const [error, setError] = useState<any>();
@@ -49,7 +60,7 @@ const ExperimentProvider: React.FC<ExperimentProviderProps> = ({
       setLoading(true);
       setError(undefined);
       setResult(undefined);
-      const workerInstance = worker();
+      const workerInstance = createWorker();
       workerInstance.onmessage = (e) => {
         switch (e.data.type) {
           case 'error': {
@@ -69,13 +80,14 @@ const ExperimentProvider: React.FC<ExperimentProviderProps> = ({
       };
       workerInstance.postMessage({
         type: 'run',
+        payload: experimentInfo,
       });
     };
     run();
     return () => {
       workerInstance?.terminate();
     };
-  }, [worker]);
+  }, [experimentInfo]);
 
   const value = useMemo(
     () => ({

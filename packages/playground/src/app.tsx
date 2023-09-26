@@ -1,11 +1,13 @@
 import { NextUIProvider } from '@nextui-org/react';
-import { Page } from './containers/experiment';
+import { Router } from './router';
 
 const App: React.FC = () => {
   return (
-    <NextUIProvider>
-      <Page slug=".capabilities" />
-    </NextUIProvider>
+    <div className="dark text-foreground bg-background">
+      <NextUIProvider>
+        <Router />
+      </NextUIProvider>
+    </div>
   );
 };
 

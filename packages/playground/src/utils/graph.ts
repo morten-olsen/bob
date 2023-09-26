@@ -1,4 +1,4 @@
-import { CalulationResult } from '@bob-the-algorithm/core';
+import { AllPlugins, CalulationResult } from '@bob-the-algorithm/core';
 
 function msToHMS(ms: number) {
   // 1- Convert to seconds:
@@ -12,13 +12,13 @@ function msToHMS(ms: number) {
   seconds = seconds % 60;
   return hours + ':' + minutes + ':' + seconds;
 }
-const convertResult = (result: CalulationResult<any>) => {
+const convertResult = (result: CalulationResult<AllPlugins>) => {
   const nodes = result.nodes.map((node) => {
-    let label = `root (${node.location})`;
+    let label = `root (${node.context.location})`;
     if (node.type === 'planable') {
       label = `task: ${node.planable!.toString()}`;
     } else if (node.type === 'travel') {
-      label = `travel->${node.location}`;
+      label = `travel->${node.context.location}`;
     }
     return {
       id: node.id,

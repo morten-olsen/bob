@@ -1,6 +1,9 @@
 import { info } from './experiment';
+const Foo = () => {
+  return <div></div>;
+};
 
 export default {
   info,
-  view: () => <>Hello</>,
+  view: Foo,
 };

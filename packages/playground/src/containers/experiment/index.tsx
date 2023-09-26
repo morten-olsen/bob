@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
-import { experiments } from '../../utils/experiments';
 import { ExperimentProvider } from '../../features/experiment/context';
 import { ExperimentView } from './view';
+import { ExperimentInfo } from '../../features/experiment/types';
 
 type PageProps = {
-  slug: string;
+  content: () => Promise<{ default: Experiment }>;
 };
 
 type Experiment = {
-  worker: () => Worker;
-  view: React.ReactElement;
+  info: ExperimentInfo;
+  view: React.ComponentType;
 };
 
-const Page: React.FC<PageProps> = ({ slug }) => {
+const ExperimentPage: React.FC<PageProps> = ({ content }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<unknown>();
   const [experiment, setExperiment] = useState<Experiment>();
@@ -22,11 +22,9 @@ const Page: React.FC<PageProps> = ({ slug }) => {
     setError(undefined);
     const load = async () => {
       try {
-        const page = experiments.find((page) => page.slug === slug);
-        if (!page) {
-          throw new Error(`Page not found: ${slug}`);
-        }
-        const next = (await page.loader()) as Experiment;
+        const { default: next } = (await content()) as {
+          default: Experiment;
+        };
         console.log('n', next);
         setExperiment(next);
       } catch (err) {
@@ -37,7 +35,7 @@ const Page: React.FC<PageProps> = ({ slug }) => {
     };
 
     load();
-  }, [slug]);
+  }, [content]);
 
   if (error) {
     return <div>Error: {error.toString()}</div>;
@@ -48,10 +46,22 @@ const Page: React.FC<PageProps> = ({ slug }) => {
   }
 
   return (
-    <ExperimentProvider worker={experiment.worker}>
-      <ExperimentView>{experiment.view}</ExperimentView>
+    <ExperimentProvider experimentInfo={experiment.info}>
+      <ExperimentView>
+        <experiment.view />
+      </ExperimentView>
     </ExperimentProvider>
   );
 };
 
-export { Page };
+const pageImports = import.meta.glob('../../experiments/*/index.tsx');
+
+const experiments: {
+  path: string;
+  element: JSX.Element;
+}[] = Object.entries(pageImports).map(([path, page]) => ({
+  path: path.replace('../../experiments/', '').replace('/index.tsx', ''),
+  element: <ExperimentPage content={page as any} />,
+}));
+
+export { experiments };

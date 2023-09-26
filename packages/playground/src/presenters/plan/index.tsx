@@ -1,60 +1,18 @@
 import { GraphNode } from '@bob-the-algorithm/core';
 import { useMemo } from 'react';
-import { convertResult } from '../../utils/graph';
-import { format } from 'date-fns';
+import { Listbox, ListboxItem, cn } from '@nextui-org/react';
 import { useExperimentResult } from '../../features/experiment';
-import { useSelectNode } from '../../features/experiment/hooks';
+import { formatTime } from '../../utils/time';
 
 type PlanProps = {
   node: GraphNode;
+  onSelect: (node: GraphNode) => void;
 };
 
-type NodeProps = {
-  node: GraphNode;
-};
-
-const Node = ({ node }: NodeProps) => {
-  const selectNode = useSelectNode();
+const Plan: React.FC<PlanProps> = ({ node, onSelect }) => {
   const data = useExperimentResult();
-  const planable = useMemo(() => {
-    return node.planable
-      ? data?.planables.find((n) => n.id === node.planable)
-      : null;
-  }, [node, data]);
-
-  const time = useMemo(() => {
-    const start = new Date(node.time);
-    const end = new Date(start.getTime() + node.duration);
-    return (
-      <span>
-        {format(start, 'HH:mm')} - {format(end, 'HH:mm')}
-      </span>
-    );
-  }, [node.duration, node.time]);
-
-  if (planable) {
-    return (
-      <div onClick={() => selectNode(node)}>
-        {time} Planable: {planable!.id}
-      </div>
-    );
-  }
-  if (node.type === 'travel') {
-    return (
-      <div onClick={() => selectNode(node)}>
-        {time} Travel: {node.context.location}
-      </div>
-    );
-  }
-
-  return null;
-};
-
-const Plan: React.FC<PlanProps> = ({ node }) => {
-  const data = useExperimentResult();
-  const output = useMemo(() => (data ? convertResult(data) : null), [data]);
   const nodes = useMemo(() => {
-    if (!output) {
+    if (!data) {
       return [];
     }
     const result: GraphNode[] = [];
@@ -68,22 +26,48 @@ const Plan: React.FC<PlanProps> = ({ node }) => {
       if (!current.parent) {
         break;
       }
-      current = output.result.nodes.find((n) => n.id === current?.parent)!;
+      current = data.nodes.find((n) => n.id === current?.parent)!;
     }
 
-    return result;
-  }, [output, node]);
+    return result.reverse();
+  }, [data, node]);
 
-  if (!output) {
+  if (!data) {
     return null;
   }
 
   return (
-    <>
-      {nodes.map((n) => (
-        <Node key={n.id} node={n} />
-      ))}
-    </>
+    <Listbox
+      variant="flat"
+      aria-label="Listbox menu with descriptions"
+      items={nodes}
+    >
+      {(node) => {
+        const time = (
+          <span>
+            {formatTime(node.time)} - {formatTime(node.time + node.duration)}
+          </span>
+        );
+        let title = '';
+        if (node.planable) {
+          const planable = data!.planables.find((n) => n.id === node.planable);
+          title = `Planable: ${planable?.id}`;
+        }
+        if (node.type === 'travel') {
+          title = `Travel: ${node.context.location}`;
+        }
+        return (
+          <ListboxItem
+            key={node.id}
+            className={cn({ selected: node.id === node.id })}
+            onClick={() => onSelect(node)}
+            description={time}
+          >
+            {title}
+          </ListboxItem>
+        );
+      }}
+    </Listbox>
   );
 };
 

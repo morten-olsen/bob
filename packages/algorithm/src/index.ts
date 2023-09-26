@@ -5,4 +5,4 @@ export {
   type CalulationResult,
   type PlanableWithPlugins,
 } from './algorithm/calulation';
-export { plugins } from './plugins/index';
+export { plugins, type AllPlugins } from './plugins';

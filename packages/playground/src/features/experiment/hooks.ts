@@ -6,6 +6,11 @@ const useExperimentResult = () => {
   return result?.payload;
 };
 
+const useExperimentDuration = () => {
+  const { result } = useContext(ExperimentContext);
+  return result?.duration;
+};
+
 const useSelectNode = () => {
   const { selectNode } = useContext(ExperimentContext);
   return selectNode;
@@ -16,4 +21,9 @@ const useSelectedNode = () => {
   return selectedNode;
 };
 
-export { useExperimentResult, useSelectNode, useSelectedNode };
+export {
+  useExperimentResult,
+  useSelectNode,
+  useSelectedNode,
+  useExperimentDuration,
+};

@@ -1,3 +1,4 @@
+import { Expand, UnionToIntersection } from '../types/utils';
 import { GraphNode } from './node';
 import { Planable } from './planable';
 
@@ -20,16 +21,20 @@ type Plugin<TAttributes = any, TContext = any> = {
 
 type Plugins = Record<string, Plugin>;
 
-type PluginAttributes<TPlugins extends Plugins> = {
+type PluginAttributes<TPlugins extends Plugins> = MergeRecords<{
   [K in keyof TPlugins]: TPlugins[K] extends Plugin<infer TAttributes, any>
   ? TAttributes
   : never;
-}[keyof TPlugins];
+}>;
 
-type PluginContext<TPlugins extends Plugins> = {
+type MergeRecords<T extends Record<string, any>> = Expand<
+  UnionToIntersection<T[keyof T]>
+>;
+
+type PluginContext<TPlugins extends Plugins> = MergeRecords<{
   [K in keyof TPlugins]: TPlugins[K] extends Plugin<any, infer TContext>
   ? TContext
   : never;
-}[keyof TPlugins];
+}>;
 
 export type { Plugin, Plugins, PluginAttributes, PluginContext };
